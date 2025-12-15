@@ -1,0 +1,15 @@
+-- 코드를 작성해주세요
+SELECT
+    Child.ID,
+    Child.GENOTYPE,
+    Parent.GENOTYPE AS PARENT_GENOTYPE
+FROM
+    ECOLI_DATA Child
+INNER JOIN
+    ECOLI_DATA Parent ON Parent.ID=Child.PARENT_ID
+WHERE 
+    Parent.GENOTYPE&Child.GENOTYPE=Parent.GENOTYPE
+ORDER BY
+    Child.ID ASC
+
+
