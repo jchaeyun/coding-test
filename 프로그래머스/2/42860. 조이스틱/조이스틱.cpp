@@ -1,47 +1,35 @@
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
 int solution(string name) {
-    // ABCDE FGHIJ KLM | NOPQR STUVW XYZ 
-    // 전자: 타겟-'A' 후자:이전알파벳 'Z'-타겟+1
-    // 절반 길이만 오른쪽 이동, 나머지는 왼쪽이동? A연속을 어케 처리하지
-    // A몇개인지 세보고 반대쪽으로 가는횟수랑 비교 000AAAA0
-    int idx=0;
-    int count=0;
-    int idxA=0;
-    
-    //알파벳 바꾸기
-    while(idx<=name.size()-1){
-        
-        if(name[idx]-'A'<=13){
-            count=count+(name[idx]-'A');
+   //세로방향 이동부터 기록
+    int cnt=0;
+    int n=name.size();
+    for(int i=0;i<n;i++){
+        if(name[i]<'N'){
+            cnt+=(name[i]-'A');
         }else{
-            count=count+('Z'-name[idx]+1);
-        }
-        idx++;
+            cnt+=('Z'-name[i]+1);
+        } 
     }
     
-    //좌우이동
+    //가로방향 이동->A인경우가 문제.
+    //오른쪽으로 가는거VS왔던길 되돌아간다음 마지막-타겟만큼이동
     
-    int move=name.size()-1; //일단 전체 이동횟수 더함
-    int next=0;
-    for(int i=0;i<name.size();i++){
-        next=i+1;
-        
-        while(next<name.size()&&name[next]=='A'){
-            next++;
-        }
-        
-        //i 먼저 갔다가 반대편으로 가서 처리하고 다시 돌아오기
-        move=min(move,i*2+((int)name.size()-next));
-        //반대편 먼저 갔다가 i로 가기
-        move=min(move,i+2*((int)name.size()-next));
-        
+    int move=n-1;
+    
+    for(int i=0;i<n;i++){
+        int next=i+1;
+        while(next<n&&name[next]=='A') next++;
+        move=min(move,i*2+(n-next)); //오른쪽으로 먼저 갔다가 돌아가서 왼쪽으로
+        move=min(move,(n-next)*2+i); //왼쪽으로 먼저 갔다가 돌아와서 오른쪽으로
     }
-       
-        
-  
-    return count+move;
+    
+    return move+cnt;
+    
 }
+
+
