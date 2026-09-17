@@ -4,42 +4,32 @@
 using namespace std;
 
 vector<int> solution(vector<int> sequence, int k) {
+    //합이 k보다 작으면 right++;
+    //합이 k보다 크면 left++
+    //합이 k면 기록하고 return
     int left=0;
     int right=0;
-    vector<int> v;
-    v.push_back(left);
-    v.push_back(right);
-     int sum=sequence[left];
-    int mindist=sequence.size();
-    while(right<sequence.size()&&left<=right){
-        if(sum==k){
-            if(mindist>right-left){//거리가 짧을때만 갱신
-                mindist=right-left;
-                v.pop_back();
-                v.pop_back();
-                v.push_back(left);
-                v.push_back(right);
-                
-            }
-            sum-=sequence[left];    
+    int sum=sequence[left];
+    int ansL=left;
+    int ansR=sequence.size()-1;
+    while(left<=right&&right<sequence.size()){
+        
+        if(sum>k){
+            sum-=sequence[left];
             left++;
-            
-            
-            
-          
-        }
-        else if(sum>k){
+        }else if(sum<k){
+            right++;
+            sum+=sequence[right];
+        }else{
+            //길이가 더 짧은 경우
+            if((right-left)<(ansR-ansL)){
+                ansL=left;
+                ansR=right;
+            }
             sum-=sequence[left];
             left++;
             
-        }else{
-            right++;
-            sum+=sequence[right];
-           
-            
         }
-        
     }
-    
-    return v;
+    return {ansL,ansR};
 }
