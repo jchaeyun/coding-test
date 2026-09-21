@@ -1,18 +1,17 @@
 #include <iostream>
-#include <vector>
 using namespace std;
 
 int solution(int n)
-{  
-    long long jump=0;
+{
+    int cnt=0;
     while(n>0){
         if(n%2==0){
             n/=2;
-        } 
-        else{
+        }else{
             n-=1;
-                jump++;
+            cnt++;
         }
     }
-    return jump;
+    
+    return cnt;
 }
