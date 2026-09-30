@@ -5,18 +5,22 @@
 using namespace std;
 
 vector<int> solution(vector<int> numbers) {
-    //2담고 3이 2보다 크면 3담고 똑같거나 작으면 스택에 넣고 
-    stack<pair<int,int>> stk;
-    vector<int> answer(numbers.size(),-1);
-    for(int i=0;i<numbers.size();i++){
-        while(!stk.empty()&&stk.top().second<numbers[i]){
-            answer[stk.top().first]=numbers[i];
+    //일단 순회를 하고, 스택에서 꺼낸 숫자보다 작거나같으면 인덱스를 스택에 넣기.
+    //크면 스택에서 꺼내고 ans배열에 넣기. while문
+    int n=numbers.size();
+    vector<int> ans(n,-1);
+    stack<int> stk;
+  
+    
+    for(int i=0;i<n;i++){
+        while(!stk.empty()&&numbers[stk.top()]<numbers[i]){
+            int idx=stk.top();
+            ans[idx]=numbers[i];
             stk.pop();
-            
         }
-            
-        stk.push({i,numbers[i]});
+        
+        stk.push(i);
     }
     
-    return answer;
+    return ans;
 }
