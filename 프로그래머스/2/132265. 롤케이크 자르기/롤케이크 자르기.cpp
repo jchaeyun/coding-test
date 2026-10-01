@@ -5,36 +5,39 @@
 using namespace std;
 
 int solution(vector<int> topping) {
-    //구역을 먼저 나눠야하나?
-    map<int,int> m;
-
-    vector<int> left(topping.size()); //누적 가짓수(왼쪽 기준)
-    vector<int> right(topping.size());//누적 가짓수(오른쪽 기준)
-    
-    //i 기준으로 잘랐을때 누적 토핑 종류 수(왼쪽) 저장
-    for(int i=0;i<topping.size();i++){
-        int key=topping[i];
-        m[key]++;
-        left[i]=m.size(); 
-    }
-    m.clear();
-    //i 기준으로 잘랐을 때 누적 토핑 종류 수(오른쪽) 저장
-    for(int i=topping.size()-1;i>=0;i--){
-        int key=topping[i];
-        m[key]++;
-        right[i]=m.size();
+    map<int,int> right;
+    map<int,int> left;
+    for(int i=1;i<topping.size();i++){
+        right[topping[i]]++;
     }
     
-    int count=0;
-   
-    for(int i=0;i<left.size()-1;i++){
-        if(left[i]==right[i+1]){
-            count++;
+    int idx=0; //0-idx / idx+1~끝
+    left[topping[idx]]++;
+    int cnt=0;
+    
+    
+    while(idx<topping.size()){
+        
+        if(left.size()==right.size()){
+            cnt++;
         }
+        
+        idx++;
+        if(idx==topping.size()){
+            break;
+        }
+        right[topping[idx]]--;
+        if(right[topping[idx]]==0){
+            right.erase(topping[idx]);
+        }
+        
+        
+        
+        left[topping[idx]]++;
+        
+        
+        
     }
     
-    
-    
-    return count;
- 
+    return cnt;
 }
