@@ -1,42 +1,44 @@
 #include <string>
 #include <vector>
-
+#include <deque>
+#include <cctype>
+#include <algorithm>
 
 using namespace std;
 
 int solution(int cacheSize, vector<string> cities) {
-   //배열에 1~cacheSize만큼 번호매김
-  //cacheSize만큼 미리 넣어둠
-    //for()해서 0인건 패스. 
-    //해당 cities 찾으면 time+1,다른것들 번호를 -1씩,맨앞(1)은 0으로 바꿈. 해당 cities에 해당하는것 cacheSize로 바꿈. 
-    //못찾으면 time+5,다른것들 번호를 -1씩,맨앞(1)은 0으로 바꿈.해당 cities에 해당하는것 cacheSize,
-    
-   
-    int time=0;
-    if(cacheSize==0) return cities.size()*5; //캐시 사이즈 0일때
-    vector<string> v;
-    for (auto& c : cities){
-        for (auto& ch : c) ch = tolower(ch);
-    }
-    
+    //cities의 인덱스를 cache배열(큐)에 저장. [0,3,4] 이렇게?
+    //매번 캐시를 순회? 
+    //캐시 순회하면서 해당 city 있으면 그 city의 인덱스를 새로 push,맨 앞은 pop
+    deque<int> q;
+    int time=0; //cachehit은 1,miss는 5
     for(int i=0;i<cities.size();i++){
-        bool hit=false;
-        for(int j=0;j<v.size();j++){
-          if(v[j]==cities[i]){
-              hit=true;
-              v.erase(v.begin() + j);
-              break;
-          }
+               transform(cities[i].begin(), cities[i].end(), cities[i].begin(), ::tolower); 
     }
-        if(hit){
-             time+=1;
-         }else{
-             time+=5;
-             if(v.size()>=cacheSize) v.erase(v.begin());
-             
-         }v.push_back(cities[i]); //캐시에 새로 넣기
+   
+    for(int i=0;i<cities.size();i++){ 
+        bool ishit=false;
+        if(!q.empty()){
+            for(int j=0;j<q.size();j++){
+                if(cities[q[j]]==cities[i]){
+                    ishit=true; //hit
+                    q.erase(q.begin()+j);
+                    break;
+                } 
+            }    
+        }
+        q.push_back(i);//miss든 hit이든 최근꺼로 업뎃하고,캐시가 다 찼다면 맨 앞을 빼야함(LRU)
         
-    }
-    return time;
+        if(ishit){
+            time+=1;
     
+        }else{
+            time+=5;
+            if(q.size()>cacheSize){
+                q.pop_front();
+            } 
+        }
+    }
+    
+    return time;
 }
